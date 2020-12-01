@@ -1,2 +1,2 @@
 # MoLang
-MoLang parse &amp; evaluator
+MoLang parse & evaluator

@@ -7,7 +7,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-group 'com.phoshp'
+group 'com.bedrockk'
 version '1.0-SNAPSHOT'
 
 repositories {
