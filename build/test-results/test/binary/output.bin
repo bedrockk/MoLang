@@ -1,353 +1,0 @@
-Raw Code: 
-	v.x = 1;
-	v.y = 1;
-loop(10, {
-  t.x = v.x + v.y;
-  v.x = v.y;
-  v.y = t.x;
-});
-
-(v.moo > 0) ? {
-$  v.x = math.sin(q.life_time * 45);
-  v.x = v.x * v.x + 17.3;
-  t.sin_x = math.sin(v.x);
-'  v.x = t.sin_x * t.sin_x + v.x * v.x;
-(  v.x = math.sqrt(v.x) * v.x * math.pi;
-};
-
-	v.x = 0;
-Afor_each(v.pig, query.get_nearby_entities(4, 'minecraft:pig'), {
-M    v.x = v.x + v.pig->query.get_relative_block_state(0, 1, 0, 'flammable');
-    v.a = v.x->v.z;
-});
-[
-  {
-    "variable": {
-      "name": "v.x"
-    },
-    "expr": {
-      "number": 1.0
-    }
-  },
-  {
-    "variable": {
-      "name": "v.y"
-    },
-    "expr": {
-      "number": 1.0
-    }
-  },
-  {
-    "count": {
-      "number": 10.0
-    },
-    "body": {
-      "expressions": [
-
-        {
-          "variable": {
-            "name": "t.x"
-          },
-          "expr": {
-            "left": {
-              "name": "v.x"
-            },
-            "right": {
-              "name": "v.y"
-            }
-          }
-        },
-
-        {
-          "variable": {
-            "name": "v.x"
-          },
-          "expr": {
-            "name": "v.y"
-          }
-        },
-
-        {
-          "variable": {
-            "name": "v.y"
-          },
-          "expr": {
-            "name": "t.x"
-          }
-
-        }
-      ]
-    }
-  },
-  {
-    "condition": {
-      "left": {
-        "name": "v.moo"
-	      },
-      "right": {
-        "number": 0.0
-      }
-    },
-    "thenExpr": {
-      "expressions": [
-
-        {
-          "variable": {
-            "name": "v.x"
-          },
-          "expr": {
-            "name": {
-!              "name": "math.sin"
-            },
-            "args": [
-              {
-                "left": {
-                  "name": {
-*                    "name": "q.life_time"
-                  },
-                  "args": []
-                },
-                "right": {
-!                  "number": 45.0
-                }
-              }
-            ]
-          }
-        },
-
-        {
-          "variable": {
-            "name": "v.x"
-          },
-          "expr": {
-            "left": {
-              "name": "v.x"
-            },
-            "right": {
-              "left": {
-                "name": "v.x"
-              },
-              "right": {
-                "number": 17.3
-              }
-            }
-          }
-        },
-
-        {
-          "variable": {
-            "name": "t.sin_x"
-          },
-          "expr": {
-            "name": {
-!              "name": "math.sin"
-            },
-            "args": [
-              {
-                "name": "v.x"
-              }
-            ]
-          }
-        },
-
-        {
-          "variable": {
-            "name": "v.x"
-          },
-          "expr": {
-            "left": {
-               "name": "t.sin_x"
-            },
-            "right": {
-              "left": {
-"                "name": "t.sin_x"
-              },
-              "right": {
-                "left": {
-                   "name": "v.x"
-                },
-                "right": {
-                   "name": "v.x"
-                }
-              }
-            }
-          }
-        },
-
-        {
-          "variable": {
-            "name": "v.x"
-          },
-          "expr": {
-            "left": {
-              "name": {
-$                "name": "math.sqrt"
-              },
-              "args": [
-                {
-                   "name": "v.x"
-                }
-              ]
-            },
-            "right": {
-              "left": {
-                "name": "v.x"
-              },
-              "right": {
-                "name": {
-$                  "name": "math.pi"
-                },
-                "args": []
-              }
-            }
-          }
-
-        }
-      ]
-    }
-  },
-  {
-    "variable": {
-      "name": "v.x"
-    },
-    "expr": {
-      "number": 0.0
-    }
-  },
-  {
-    "variable": {
-      "name": "v.pig"
-    },
-    "array": {
-      "name": {
-,        "name": "query.get_nearby_entities"
-	      },
-      "args": [
-
-        {
-          "number": 4.0
-        },
-
-        {
-$          "string": "minecraft:pig"
-
-        }
-      ]
-    },
-    "body": {
-      "expressions": [
-
-        {
-          "variable": {
-            "name": "v.x"
-          },
-          "expr": {
-            "left": {
-              "name": "v.x"
-            },
-            "right": {
-              "left": {
-                 "name": "v.pig"
-              },
-              "right": {
-                "name": {
-;                  "name": "query.get_relative_block_state"
-                },
-                "args": [
-                  {
-"                    "number": 0.0
-                  },
-                  {
-"                    "number": 1.0
-                  },
-                  {
-"                    "number": 0.0
-                  },
-                  {
-*                    "string": "flammable"
-                  }
-                ]
-              }
-            }
-          }
-        },
-
-        {
-          "variable": {
-            "name": "v.a"
-          },
-          "expr": {
-            "left": {
-              "name": "v.x"
-            },
-            "right": {
-              "name": "v.z"
-            }
-          }
-
-        }
-      ]
-    }
-  },
-  null
-]
-Raw Code: 
-yv.a = query.is_sleeping ? geometry.my_sleeping_geo : array.my_geos[math.cos(query.anim_time * 12.3 + 41.9) * 10 + 0.6];
-[
-  {
-    "variable": {
-      "name": "v.a"
-    },
-    "expr": {
-      "condition": {
-        "name": {
-&          "name": "query.is_sleeping"
-        },
-        "args": []
-	      },
-      "thenExpr": {
-+        "name": "geometry.my_sleeping_geo"
-	      },
-      "elseExpr": {
-        "array": {
-"          "name": "array.my_geos"
-        },
-        "index": {
-          "left": {
-            "name": {
-!              "name": "math.cos"
-            },
-            "args": [
-              {
-                "left": {
-                  "name": {
-.                    "name": "query.anim_time"
-                  },
-                  "args": []
-                },
-                "right": {
-                  "left": {
-#                    "number": 12.3
-                  },
-                  "right": {
-#                    "number": 41.9
-                  }
-                }
-              }
-            ]
-          },
-          "right": {
-            "left": {
-              "number": 10.0
-            },
-            "right": {
-              "number": 0.6
-            }
-          }
-
-        }
-      }
-    }
-  },
-  null
-]
