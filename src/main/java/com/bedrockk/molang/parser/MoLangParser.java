@@ -5,6 +5,7 @@ import com.bedrockk.molang.parser.tokenizer.Token;
 import com.bedrockk.molang.parser.tokenizer.TokenIterator;
 import com.bedrockk.molang.parser.tokenizer.TokenType;
 import lombok.extern.log4j.Log4j2;
+import lombok.var;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,20 +15,19 @@ import java.util.Map;
 @Log4j2
 public final class MoLangParser {
 
-    private final static Map<TokenType, Parselet> prefixParselets = new HashMap<>();
+    private final static Map<TokenType, PrefixParselet> prefixParselets = new HashMap<>();
     private final static Map<TokenType, InfixParselet> infixParselets = new HashMap<>();
 
     private final TokenIterator tokenIterator;
     private final List<Token> readTokens = new ArrayList<>();
     private Token lastConsumed;
-    private Expression lastExpression;
 
     static {
         prefixParselets.put(TokenType.NAME, new NameParselet());
         prefixParselets.put(TokenType.STRING, new StringParselet());
         prefixParselets.put(TokenType.NUMBER, new NumberParselet());
-        prefixParselets.put(TokenType.TRUE, new BooleanParselet());
-        prefixParselets.put(TokenType.FALSE, new BooleanParselet());
+        prefixParselets.put(TokenType.TRUE, new BooleanParselet(Precedence.PREFIX));
+        prefixParselets.put(TokenType.FALSE, new BooleanParselet(Precedence.PREFIX));
         prefixParselets.put(TokenType.RETURN, new ReturnParselet());
         prefixParselets.put(TokenType.CONTINUE, new ContinueParselet());
         prefixParselets.put(TokenType.BREAK, new BreakParselet());
@@ -35,28 +35,28 @@ public final class MoLangParser {
         prefixParselets.put(TokenType.FOR_EACH, new ForEachParselet());
         prefixParselets.put(TokenType.THIS, new ThisParselet());
         prefixParselets.put(TokenType.BRACKET_LEFT, new GroupParselet());
-        prefixParselets.put(TokenType.CURLY_BRACKET_LEFT, new BracketScopeParselet());
-        prefixParselets.put(TokenType.MINUS, new UnaryMinusParselet());
-        prefixParselets.put(TokenType.PLUS, new UnaryPlusParselet());
-        prefixParselets.put(TokenType.BANG, new BooleanNotParselet());
+        prefixParselets.put(TokenType.CURLY_BRACKET_LEFT, new BracketScopeParselet(Precedence.SCOPE));
+        prefixParselets.put(TokenType.MINUS, new UnaryMinusParselet(Precedence.PREFIX));
+        prefixParselets.put(TokenType.PLUS, new UnaryPlusParselet(Precedence.PREFIX));
+        prefixParselets.put(TokenType.BANG, new BooleanNotParselet(Precedence.PREFIX));
 
-        infixParselets.put(TokenType.QUESTION, new TernaryParselet());
-        infixParselets.put(TokenType.ARRAY_LEFT, new ArrayAccessParselet());
-        infixParselets.put(TokenType.PLUS, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.MINUS, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.SLASH, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.ASTERISK, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.EQUALS, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.NOT_EQUALS, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.GREATER, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.GREATER_OR_EQUALS, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.SMALLER, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.SMALLER_OR_EQUALS, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.AND, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.OR, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.COALESCE, new GenericBinaryOpParselet());
+        infixParselets.put(TokenType.QUESTION, new TernaryParselet(Precedence.CONDITIONAL));
+        infixParselets.put(TokenType.ARRAY_LEFT, new ArrayAccessParselet(Precedence.ARRAY_ACCESS));
+        infixParselets.put(TokenType.PLUS, new GenericBinaryOpParselet(Precedence.SUM));
+        infixParselets.put(TokenType.MINUS, new GenericBinaryOpParselet(Precedence.SUM));
+        infixParselets.put(TokenType.SLASH, new GenericBinaryOpParselet(Precedence.PRODUCT));
+        infixParselets.put(TokenType.ASTERISK, new GenericBinaryOpParselet(Precedence.PRODUCT));
+        infixParselets.put(TokenType.EQUALS, new GenericBinaryOpParselet(Precedence.COMPARE));
+        infixParselets.put(TokenType.NOT_EQUALS, new GenericBinaryOpParselet(Precedence.COMPARE));
+        infixParselets.put(TokenType.GREATER, new GenericBinaryOpParselet(Precedence.COMPARE));
+        infixParselets.put(TokenType.GREATER_OR_EQUALS, new GenericBinaryOpParselet(Precedence.COMPARE));
+        infixParselets.put(TokenType.SMALLER, new GenericBinaryOpParselet(Precedence.COMPARE));
+        infixParselets.put(TokenType.SMALLER_OR_EQUALS, new GenericBinaryOpParselet(Precedence.COMPARE));
+        infixParselets.put(TokenType.AND, new GenericBinaryOpParselet(Precedence.AND));
+        infixParselets.put(TokenType.OR, new GenericBinaryOpParselet(Precedence.OR));
+        infixParselets.put(TokenType.COALESCE, new GenericBinaryOpParselet(Precedence.COALESCE));
         infixParselets.put(TokenType.ARROW, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.ASSIGN, new AssignParselet());
+        infixParselets.put(TokenType.ASSIGN, new AssignParselet(Precedence.ASSIGNMENT));
     }
 
     public MoLangParser(TokenIterator iterator) {
@@ -67,38 +67,60 @@ public final class MoLangParser {
         List<Expression> exprs = new ArrayList<>();
 
         do {
-            exprs.add(parseExpression());
+            Expression expr = parseExpression();
+            if (expr != null) {
+                exprs.add(expr);
+            } else {
+                break;
+            }
         } while (matchToken(TokenType.SEMICOLON));
 
         return exprs;
     }
 
     public Expression parseExpression() {
+        return parseExpression(Precedence.ANYTHING);
+    }
+
+    public Expression parseExpression(Precedence precedence) {
         Token token = consumeToken();
 
         if (token.getType().equals(TokenType.EOF)) {
             return null;
         }
 
-        Parselet parselet = prefixParselets.get(token.getType());
+        PrefixParselet parselet = prefixParselets.get(token.getType());
 
         if (parselet == null) {
-            throw new RuntimeException("Cannot parse " + token.getType().name() + " expression " + token.getText());
+            throw new RuntimeException("Cannot parse " + token.getType().name() + " expression");
         }
 
-        return parseInfixExpression(parselet.parse(this, token));
+        return parseInfixExpression(parselet.parse(this, token), precedence);
     }
 
-    private Expression parseInfixExpression(Expression expression) {
-        Token nextToken = readToken();
+    private Expression parseInfixExpression(Expression left, Precedence precedence) {
+        Token token;
 
-        if (infixParselets.containsKey(nextToken.getType())) {
-            Token token = consumeToken();
-
-            return infixParselets.get(nextToken.getType()).parse(this, token, expression);
+        while (precedence.ordinal() < getPrecedence().ordinal()) {
+            token = consumeToken();
+            left = infixParselets.get(token.getType()).parse(this, token, left);
         }
 
-        return expression;
+        return left;
+    }
+
+    private Precedence getPrecedence() {
+        Token token = readToken();
+
+        if (token != null) {
+            InfixParselet parselet = infixParselets.get(token.getType());
+
+            if (parselet != null) {
+                return parselet.getPrecedence();
+            }
+        }
+
+        return Precedence.ANYTHING;
     }
 
     public List<Expression> parseArgs() {

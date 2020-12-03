@@ -2,18 +2,19 @@ package com.bedrockk.molang.parser;
 
 import com.bedrockk.molang.parser.tokenizer.Token;
 
-public abstract class InfixParselet {
+public abstract class PrefixParselet {
 
     private final Precedence precedence;
 
-    public InfixParselet() {
+    public PrefixParselet() {
         this.precedence = Precedence.ANYTHING;
     }
-    public InfixParselet(Precedence precedence) {
+
+    public PrefixParselet(Precedence precedence) {
         this.precedence = precedence;
     }
 
-    public abstract Expression parse(MoLangParser parser, Token token, Expression leftExpr);
+    public abstract Expression parse(MoLangParser parser, Token token);
 
     public Precedence getPrecedence() {
         return precedence;

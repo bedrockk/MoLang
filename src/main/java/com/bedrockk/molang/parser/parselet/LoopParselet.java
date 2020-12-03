@@ -2,13 +2,22 @@ package com.bedrockk.molang.parser.parselet;
 
 import com.bedrockk.molang.parser.Expression;
 import com.bedrockk.molang.parser.MoLangParser;
-import com.bedrockk.molang.parser.Parselet;
+import com.bedrockk.molang.parser.Precedence;
+import com.bedrockk.molang.parser.PrefixParselet;
 import com.bedrockk.molang.parser.expression.LoopExpression;
 import com.bedrockk.molang.parser.tokenizer.Token;
 
 import java.util.List;
 
-public class LoopParselet implements Parselet {
+public class LoopParselet extends PrefixParselet {
+
+    public LoopParselet(Precedence precedence) {
+        super(precedence);
+    }
+
+    public LoopParselet() {
+        super();
+    }
 
     @Override
     public Expression parse(MoLangParser parser, Token token) {
