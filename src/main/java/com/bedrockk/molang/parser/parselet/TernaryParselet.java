@@ -8,15 +8,7 @@ import com.bedrockk.molang.parser.expression.TernaryExpression;
 import com.bedrockk.molang.parser.tokenizer.Token;
 import com.bedrockk.molang.parser.tokenizer.TokenType;
 
-public class TernaryParselet extends InfixParselet {
-
-    public TernaryParselet(Precedence precedence) {
-        super(precedence);
-    }
-
-    public TernaryParselet() {
-        super();
-    }
+public class TernaryParselet implements InfixParselet {
 
     @Override
     public Expression parse(MoLangParser parser, Token token, Expression leftExpr) {
@@ -31,5 +23,10 @@ public class TernaryParselet extends InfixParselet {
                 return new TernaryExpression(leftExpr, thenExpr, parser.parseExpression(getPrecedence()));
             }
         }
+    }
+
+    @Override
+    public Precedence getPrecedence() {
+        return Precedence.CONDITIONAL;
     }
 }

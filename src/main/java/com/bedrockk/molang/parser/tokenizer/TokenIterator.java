@@ -23,7 +23,7 @@ public class TokenIterator {
 
                 if (token != null) {
                     index += 2;
-                    return new Token(token);
+                    return new Token(token, getPosition());
                 }
             }
 
@@ -31,7 +31,7 @@ public class TokenIterator {
             TokenType tokenType = TokenType.bySymbol(expr);
             if (tokenType != null) {
                 index++;
-                return new Token(tokenType);
+                return new Token(tokenType, getPosition());
             } else if (expr.equals("'")) {
                 int stringStart = index;
                 int stringLength = index + 1;
@@ -43,7 +43,7 @@ public class TokenIterator {
                 stringLength++;
                 index = stringLength;
 
-                return new Token(TokenType.STRING, code.substring(stringStart + 1, stringLength - 1));
+                return new Token(TokenType.STRING, code.substring(stringStart + 1, stringLength - 1), getPosition());
             } else if (Character.isLetter(expr.charAt(0))) {
                 int nameLength = index + 1;
 
@@ -59,7 +59,7 @@ public class TokenIterator {
                 }
 
                 index = nameLength;
-                return new Token(token, value);
+                return new Token(token, value, getPosition());
             } else if (Character.isDigit(expr.charAt(0))) {
                 int numStart = index;
                 int numLength = index + 1;
@@ -74,7 +74,7 @@ public class TokenIterator {
 
                 index = numLength;
 
-                return new Token(TokenType.NUMBER, code.substring(numStart, numLength));
+                return new Token(TokenType.NUMBER, code.substring(numStart, numLength), getPosition());
             } else if (expr.equals("\n") || expr.equals("\r")) {
                 currentLine++;
             }
@@ -82,7 +82,7 @@ public class TokenIterator {
             index++;
         }
 
-        return new Token(TokenType.EOF);
+        return new Token(TokenType.EOF, getPosition());
     }
 
     public void step() {

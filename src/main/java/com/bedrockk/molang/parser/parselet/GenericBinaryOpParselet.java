@@ -6,16 +6,11 @@ import com.bedrockk.molang.parser.MoLangParser;
 import com.bedrockk.molang.parser.Precedence;
 import com.bedrockk.molang.parser.expression.binaryop.*;
 import com.bedrockk.molang.parser.tokenizer.Token;
+import lombok.Value;
 
-public class GenericBinaryOpParselet extends InfixParselet {
-
-    public GenericBinaryOpParselet(Precedence precedence) {
-        super(precedence);
-    }
-
-    public GenericBinaryOpParselet() {
-        super();
-    }
+@Value
+public class GenericBinaryOpParselet implements InfixParselet {
+    Precedence precedence;
 
     @Override
     public Expression parse(MoLangParser parser, Token token, Expression leftExpr) {
@@ -53,5 +48,10 @@ public class GenericBinaryOpParselet extends InfixParselet {
         }
 
         return null;
+    }
+
+    @Override
+    public Precedence getPrecedence() {
+        return precedence;
     }
 }

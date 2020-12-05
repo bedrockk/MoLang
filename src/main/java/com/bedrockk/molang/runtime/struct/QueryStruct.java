@@ -1,33 +1,30 @@
 package com.bedrockk.molang.runtime.struct;
 
 import com.bedrockk.molang.runtime.MoParams;
-import lombok.Value;
+import com.bedrockk.molang.runtime.value.MoValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 import java.util.function.Function;
 
-@Value
+@Getter
+@RequiredArgsConstructor
 public class QueryStruct implements MoStruct {
 
-    Map<String, Function<MoParams, Object>> functions;
+    private final Map<String, Function<MoParams, Object>> functions;
 
     @Override
-    public Object get(String key, MoParams params) {
+    public MoValue get(String key, MoParams params) {
         if (functions.containsKey(key)) {
-            Object result = functions.get(key).apply(params);
-
-            if (result instanceof Number) {
-                return ((Number) result).floatValue();
-            }
-
-            return result;
+            return MoValue.of(functions.get(key).apply(params));
         }
 
         return null;
     }
 
     @Override
-    public void set(String name, Object value) {
+    public void set(String name, MoValue value) {
         throw new RuntimeException("Cannot set a value in query struct");
     }
 

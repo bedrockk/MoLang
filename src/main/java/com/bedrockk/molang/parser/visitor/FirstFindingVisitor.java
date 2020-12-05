@@ -1,29 +1,30 @@
 package com.bedrockk.molang.parser.visitor;
 
+import com.bedrockk.molang.parser.ExprTraverser;
 import com.bedrockk.molang.parser.ExprVisitor;
 import com.bedrockk.molang.parser.Expression;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 @RequiredArgsConstructor
-public class FindingVisitor implements ExprVisitor {
+public class FirstFindingVisitor implements ExprVisitor {
 
     private final Predicate<Expression> predicate;
-    private final List<Expression> foundExpressions = new ArrayList<>();
+    private Expression found;
 
     @Override
     public Object onVisit(Expression expression) {
         if (predicate.test(expression)) {
-            foundExpressions.add(expression);
+            found = expression;
+
+            return ExprTraverser.ActionType.STOP_TRAVERSAL;
         }
 
         return null;
     }
 
-    public List<Expression> getFoundExpressions() {
-        return foundExpressions;
+    public Expression getFound() {
+        return found;
     }
 }

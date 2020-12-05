@@ -7,18 +7,10 @@ import com.bedrockk.molang.parser.PrefixParselet;
 import com.bedrockk.molang.parser.expression.UnaryMinusExpression;
 import com.bedrockk.molang.parser.tokenizer.Token;
 
-public class UnaryMinusParselet extends PrefixParselet {
-
-    public UnaryMinusParselet(Precedence precedence) {
-        super(precedence);
-    }
-
-    public UnaryMinusParselet() {
-        super();
-    }
+public class UnaryMinusParselet implements PrefixParselet {
 
     @Override
     public Expression parse(MoLangParser parser, Token token) {
-        return new UnaryMinusExpression(parser.parseExpression(getPrecedence()));
+        return new UnaryMinusExpression(parser.parseExpression(Precedence.PREFIX));
     }
 }

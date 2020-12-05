@@ -8,9 +8,11 @@ import lombok.Value;
 public class Token {
     TokenType type;
     String text;
+    TokenPosition position;
 
-    public Token(TokenType tokenType) {
+    public Token(TokenType tokenType, TokenPosition position) {
         this.type = tokenType;
         this.text = tokenType.getSymbol();
+        this.position = position;
     }
 }

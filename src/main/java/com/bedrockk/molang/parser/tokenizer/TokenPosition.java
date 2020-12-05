@@ -1,14 +1,12 @@
 package com.bedrockk.molang.parser.tokenizer;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
+@Value
 public class TokenPosition {
 
-    private int startLineNumber;
-    private int endLineNumber;
-    private int startColumn;
-    private int endColumn;
+    int startLineNumber;
+    int endLineNumber;
+    int startColumn;
+    int endColumn;
 }

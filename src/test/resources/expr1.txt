@@ -16,6 +16,7 @@ loop(10, {
 
 v.x = 0;
 for_each(v.pig, query.get_nearby_entities(4, 'minecraft:pig'), {
-    v.x = v.x + v.pig->query.get_relative_block_state(0, 1, 0, 'flammable');
+
     v.a = v.x->v.z;
+    v.x = v.x + v.pig->query.get_relative_block_state(0, 1, 0, 'flammable');
 });

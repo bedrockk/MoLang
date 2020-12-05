@@ -1,62 +1,62 @@
 package com.bedrockk.molang.runtime.struct;
 
 import com.bedrockk.molang.runtime.MoParams;
+import com.bedrockk.molang.runtime.value.MoValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
+@Getter
+@RequiredArgsConstructor
 public class VariableStruct implements MoStruct {
-    private final ConcurrentMap<String, Object> values = new ConcurrentHashMap<>();
+    private final Map<String, MoValue> map;
 
-    public VariableStruct() {}
-
-    public VariableStruct(Map<String, Object> map) {
-        values.putAll(map);
+    public VariableStruct() {
+        this.map = new HashMap<>();
     }
 
     @Override
-    public void set(String name, Object value) {
-        if (value instanceof MoStruct || value instanceof Float) {
-            LinkedList<String> segments = new LinkedList<>(Arrays.asList(name.split("\\.")));
-            String main = segments.poll();
-
-            if (segments.size() > 0 && main != null) {
-                Object struct = get(main, MoParams.EMPTY);
-
-                if (!(struct instanceof MoStruct)) {
-                    struct = new VariableStruct();
-                }
-
-                ((MoStruct) struct).set(segments.poll(), value);
-            } else {
-                values.put(name, value);
-            }
-        } else {
-            throw new RuntimeException("Tried to set invalid type of value in MoStruct: " + value.getClass());
-        }
-    }
-
-    @Override
-    public Object get(String name, MoParams params) {
+    public void set(String name, MoValue value) {
         LinkedList<String> segments = new LinkedList<>(Arrays.asList(name.split("\\.")));
         String main = segments.poll();
 
         if (segments.size() > 0 && main != null) {
-            Object struct = values.get(main);
+            Object struct = get(main, MoParams.EMPTY);
+
+            if (!(struct instanceof MoStruct)) {
+                struct = new VariableStruct();
+            }
+
+            ((MoStruct) struct).set(segments.poll(), value);
+
+            map.put(main, (MoStruct) struct);
+        } else {
+            map.put(name, value);
+        }
+    }
+
+    @Override
+    public MoValue get(String name, MoParams params) {
+        LinkedList<String> segments = new LinkedList<>(Arrays.asList(name.split("\\.")));
+        String main = segments.poll();
+
+        if (segments.size() > 0 && main != null) {
+            Object struct = map.get(main);
 
             if (struct instanceof MoStruct) {
                 return ((MoStruct) struct).get(segments.poll(), MoParams.EMPTY);
             }
         }
 
-        return values.get(name);
+        return map.get(name);
     }
 
     @Override
     public void clear() {
-        values.clear();
+        map.clear();
     }
 }

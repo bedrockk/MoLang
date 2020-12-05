@@ -4,15 +4,12 @@ import com.bedrockk.molang.parser.parselet.*;
 import com.bedrockk.molang.parser.tokenizer.Token;
 import com.bedrockk.molang.parser.tokenizer.TokenIterator;
 import com.bedrockk.molang.parser.tokenizer.TokenType;
-import lombok.extern.log4j.Log4j2;
-import lombok.var;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
 public final class MoLangParser {
 
     private final static Map<TokenType, PrefixParselet> prefixParselets = new HashMap<>();
@@ -20,14 +17,13 @@ public final class MoLangParser {
 
     private final TokenIterator tokenIterator;
     private final List<Token> readTokens = new ArrayList<>();
-    private Token lastConsumed;
 
     static {
         prefixParselets.put(TokenType.NAME, new NameParselet());
         prefixParselets.put(TokenType.STRING, new StringParselet());
         prefixParselets.put(TokenType.NUMBER, new NumberParselet());
-        prefixParselets.put(TokenType.TRUE, new BooleanParselet(Precedence.PREFIX));
-        prefixParselets.put(TokenType.FALSE, new BooleanParselet(Precedence.PREFIX));
+        prefixParselets.put(TokenType.TRUE, new BooleanParselet());
+        prefixParselets.put(TokenType.FALSE, new BooleanParselet());
         prefixParselets.put(TokenType.RETURN, new ReturnParselet());
         prefixParselets.put(TokenType.CONTINUE, new ContinueParselet());
         prefixParselets.put(TokenType.BREAK, new BreakParselet());
@@ -35,13 +31,13 @@ public final class MoLangParser {
         prefixParselets.put(TokenType.FOR_EACH, new ForEachParselet());
         prefixParselets.put(TokenType.THIS, new ThisParselet());
         prefixParselets.put(TokenType.BRACKET_LEFT, new GroupParselet());
-        prefixParselets.put(TokenType.CURLY_BRACKET_LEFT, new BracketScopeParselet(Precedence.SCOPE));
-        prefixParselets.put(TokenType.MINUS, new UnaryMinusParselet(Precedence.PREFIX));
-        prefixParselets.put(TokenType.PLUS, new UnaryPlusParselet(Precedence.PREFIX));
-        prefixParselets.put(TokenType.BANG, new BooleanNotParselet(Precedence.PREFIX));
+        prefixParselets.put(TokenType.CURLY_BRACKET_LEFT, new BracketScopeParselet());
+        prefixParselets.put(TokenType.MINUS, new UnaryMinusParselet());
+        prefixParselets.put(TokenType.PLUS, new UnaryPlusParselet());
+        prefixParselets.put(TokenType.BANG, new BooleanNotParselet());
 
-        infixParselets.put(TokenType.QUESTION, new TernaryParselet(Precedence.CONDITIONAL));
-        infixParselets.put(TokenType.ARRAY_LEFT, new ArrayAccessParselet(Precedence.ARRAY_ACCESS));
+        infixParselets.put(TokenType.QUESTION, new TernaryParselet());
+        infixParselets.put(TokenType.ARRAY_LEFT, new ArrayAccessParselet());
         infixParselets.put(TokenType.PLUS, new GenericBinaryOpParselet(Precedence.SUM));
         infixParselets.put(TokenType.MINUS, new GenericBinaryOpParselet(Precedence.SUM));
         infixParselets.put(TokenType.SLASH, new GenericBinaryOpParselet(Precedence.PRODUCT));
@@ -55,8 +51,8 @@ public final class MoLangParser {
         infixParselets.put(TokenType.AND, new GenericBinaryOpParselet(Precedence.AND));
         infixParselets.put(TokenType.OR, new GenericBinaryOpParselet(Precedence.OR));
         infixParselets.put(TokenType.COALESCE, new GenericBinaryOpParselet(Precedence.COALESCE));
-        infixParselets.put(TokenType.ARROW, new GenericBinaryOpParselet());
-        infixParselets.put(TokenType.ASSIGN, new AssignParselet(Precedence.ASSIGNMENT));
+        infixParselets.put(TokenType.ARROW, new GenericBinaryOpParselet(Precedence.ARROW));
+        infixParselets.put(TokenType.ASSIGN, new AssignParselet());
     }
 
     public MoLangParser(TokenIterator iterator) {
@@ -95,7 +91,10 @@ public final class MoLangParser {
             throw new RuntimeException("Cannot parse " + token.getType().name() + " expression");
         }
 
-        return parseInfixExpression(parselet.parse(this, token), precedence);
+        Expression expr = parselet.parse(this, token);
+        initExpr(expr, token);
+
+        return parseInfixExpression(expr, precedence);
     }
 
     private Expression parseInfixExpression(Expression left, Precedence precedence) {
@@ -104,9 +103,14 @@ public final class MoLangParser {
         while (precedence.ordinal() < getPrecedence().ordinal()) {
             token = consumeToken();
             left = infixParselets.get(token.getType()).parse(this, token, left);
+            initExpr(left, token);
         }
 
         return left;
+    }
+
+    private void initExpr(Expression expression, Token token) {
+        expression.getAttributes().put("position", token.getPosition());
     }
 
     private Precedence getPrecedence() {
@@ -164,12 +168,6 @@ public final class MoLangParser {
         return name.split("\\.")[0];
     }
 
-    public boolean checkName(String name) {
-        String head = getNameHead(name);
-
-        return head.equals("query") || head.equals("variable") || head.equals("temp") || head.equals("context");
-    }
-
     public Token consumeToken() {
         return consumeToken(null);
     }
@@ -184,9 +182,7 @@ public final class MoLangParser {
             }
         }
 
-        lastConsumed = readTokens.remove(0);
-
-        return lastConsumed;
+        return readTokens.remove(0);
     }
 
     public boolean matchToken(TokenType expectedType) {

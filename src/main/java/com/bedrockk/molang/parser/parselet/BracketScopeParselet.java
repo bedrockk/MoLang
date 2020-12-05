@@ -11,15 +11,7 @@ import com.bedrockk.molang.parser.tokenizer.TokenType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BracketScopeParselet extends PrefixParselet {
-
-    public BracketScopeParselet(Precedence precedence) {
-        super(precedence);
-    }
-
-    public BracketScopeParselet() {
-        super();
-    }
+public class BracketScopeParselet implements PrefixParselet {
 
     @Override
     public Expression parse(MoLangParser parser, Token token) {
@@ -31,7 +23,7 @@ public class BracketScopeParselet extends PrefixParselet {
                     break;
                 }
 
-                exprs.add(parser.parseExpression(getPrecedence()));
+                exprs.add(parser.parseExpression(Precedence.SCOPE));
             } while (parser.matchToken(TokenType.SEMICOLON));
 
             parser.consumeToken(TokenType.CURLY_BRACKET_RIGHT);

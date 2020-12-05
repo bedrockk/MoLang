@@ -8,15 +8,7 @@ import com.bedrockk.molang.parser.expression.ArrayAccessExpression;
 import com.bedrockk.molang.parser.tokenizer.Token;
 import com.bedrockk.molang.parser.tokenizer.TokenType;
 
-public class ArrayAccessParselet extends InfixParselet {
-
-    public ArrayAccessParselet(Precedence precedence) {
-        super(precedence);
-    }
-
-    public ArrayAccessParselet() {
-        super();
-    }
+public class ArrayAccessParselet implements InfixParselet {
 
     @Override
     public Expression parse(MoLangParser parser, Token token, Expression leftExpr) {
@@ -24,5 +16,10 @@ public class ArrayAccessParselet extends InfixParselet {
         parser.consumeToken(TokenType.ARRAY_RIGHT);
 
         return new ArrayAccessExpression(leftExpr, index);
+    }
+
+    @Override
+    public Precedence getPrecedence() {
+        return Precedence.ARRAY_ACCESS;
     }
 }

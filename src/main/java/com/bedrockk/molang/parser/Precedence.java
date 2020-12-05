@@ -17,5 +17,6 @@ public enum Precedence {
 
     SUM,
     PRODUCT,
-    PREFIX
+    PREFIX,
+    ARROW
 }

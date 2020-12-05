@@ -10,6 +10,10 @@ public interface ExprVisitor {
 
     Object onVisit(Expression expression);
 
+    default void onLeave(Expression expression) {
+        // noop
+    }
+
     default void afterTraverse(List<Expression> expressions) {
         // noop
     }

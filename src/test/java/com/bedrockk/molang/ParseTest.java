@@ -11,12 +11,12 @@ public class ParseTest {
     @Test
     @DisplayName("Parse File 1")
     public void parse1() throws IOException {
-        MoLang.newParser(getClass().getClassLoader().getResourceAsStream("parse_test.txt"));
+        MoLang.newParser(getClass().getClassLoader().getResourceAsStream("expr1.txt"));
     }
 
     @Test
     @DisplayName("Parse File 2")
     public void parse2() throws IOException {
-        MoLang.newParser(getClass().getClassLoader().getResourceAsStream("parse_test2.txt"));
+        MoLang.newParser(getClass().getClassLoader().getResourceAsStream("expr2.txt"));
     }
 }

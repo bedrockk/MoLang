@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
 public class ExprTraverser {
@@ -63,6 +66,10 @@ public class ExprTraverser {
                 traverseExpr(expression);
             }
 
+            for (ExprVisitor visitor : visitors) {
+                visitor.onLeave(expression);
+            }
+
             if (removeCurrent) {
                 expressions.remove(i);
             } else {
@@ -113,6 +120,10 @@ public class ExprTraverser {
                     break;
                 } else if (traverseChildren && !removeCurrent) {
                     traverseExpr(subExpr);
+                }
+
+                for (ExprVisitor visitor : visitors) {
+                    visitor.onLeave(subExpr);
                 }
 
                 if (removeCurrent) {

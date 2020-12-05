@@ -18,7 +18,7 @@ public class ExprTraverseTest {
     @Test
     @DisplayName("Test Find")
     public void testFind() throws IOException {
-        MoLangParser parser = MoLang.newParser(getClass().getClassLoader().getResourceAsStream("parse_test2.txt"));
+        MoLangParser parser = MoLang.newParser(getClass().getClassLoader().getResourceAsStream("expr2.txt"));
 
         List<Expression> found = ExprFinder.find(parser.parse(), expression -> expression instanceof FuncCallExpression);
 
@@ -28,8 +28,8 @@ public class ExprTraverseTest {
     @Test
     @DisplayName("Test Find 2")
     public void testFind2() throws IOException {
-        MoLangParser parser = MoLang.newParser(getClass().getClassLoader().getResourceAsStream("parse_test2.txt"));
+        MoLangParser parser = MoLang.newParser(getClass().getClassLoader().getResourceAsStream("expr2.txt"));
 
-        System.out.println("\n" + (new GsonBuilder()).setPrettyPrinting().create().toJson(parser.parse()));
+        System.out.println("\n" + (new GsonBuilder()).create().toJson(parser.parse()));
     }
 }
