@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'maven'
+    id 'maven-publish'
 }
 
 java {
@@ -30,4 +32,27 @@ test {
     useJUnitPlatform()
 
     maxHeapSize = '1G'
+}
+
+publishing {
+    repositories {
+        maven {
+            if(project.version.endsWith('-SNAPSHOT')) {
+                url "https://bedrockk.jfrog.io/artifactory/maven-snapshots/"
+            } else {
+                url "https://bedrockk.jfrog.io/artifactory/maven-releases/"
+            }
+
+            credentials {
+                username = "$maven_user"
+                password = "$maven_pass"
+            }
+        }
+    }
+
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }

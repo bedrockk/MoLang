@@ -22,7 +22,7 @@ public class ExprConnectingVisitor implements ExprVisitor {
     @Override
     public Object onVisit(Expression expression) {
         if (!stack.isEmpty()) {
-            expression.getAttributes().put("parent", stack.pollLast());
+            expression.getAttributes().put("parent", stack.getLast());
         }
 
         if (previous != null && expression.getAttributes().get("parent") == previous.getAttributes().get("parent")) {
@@ -38,6 +38,6 @@ public class ExprConnectingVisitor implements ExprVisitor {
     @Override
     public void onLeave(Expression expression) {
         previous = expression;
-        stack.poll();
+        stack.pollLast();
     }
 }

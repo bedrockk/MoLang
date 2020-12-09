@@ -1,2 +1,7 @@
-.idea/*
+# Intellij IDEA
+.idea
+
+# Gradle
+.gradle
 build/*
+gradle.properties
