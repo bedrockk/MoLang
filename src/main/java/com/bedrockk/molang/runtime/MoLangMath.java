@@ -21,7 +21,7 @@ public class MoLangMath {
             put("die_roll", params -> dieRoll(params.getDouble(0), params.getDouble(1), params.getDouble(2)));
             put("die_roll_integer", params -> dieRollInt(params.getInt(0), params.getInt(1), params.getInt(2)));
             put("exp", params -> Math.exp(params.getDouble(0)));
-            put("mod", params -> params.getDouble(0) % params.getDouble(0));
+            put("mod", params -> params.getDouble(0) % params.getDouble(1));
             put("floor", params -> Math.floor(params.getDouble(0)));
             put("hermite_blend", params -> hermiteBlend(params.getInt(0)));
             put("lerp", params -> lerp(params.getDouble(0), params.getDouble(1), params.getDouble(2)));

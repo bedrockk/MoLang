@@ -30,7 +30,7 @@ public class MoParams {
     }
 
     public boolean contains(int index) {
-        return params.get(index) != null;
+        return params.size() >= index + 1;
     }
 
     public int getInt(int index) {
