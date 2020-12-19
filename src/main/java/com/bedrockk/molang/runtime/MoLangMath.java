@@ -47,7 +47,7 @@ public class MoLangMath {
         return (int) Math.round(low + Math.random() * (high - low));
     }
 
-    public static float dieRoll(double num, double low, double high) {
+    public static double dieRoll(double num, double low, double high) {
         int i = 0;
         int total = 0;
         while (i++ < num) total += random(low, high);
