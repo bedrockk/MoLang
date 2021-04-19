@@ -37,22 +37,17 @@ test {
 publishing {
     repositories {
         maven {
-            if(project.version.endsWith('-SNAPSHOT')) {
-                url "https://bedrockk.jfrog.io/artifactory/maven-snapshots/"
-            } else {
-                url "https://bedrockk.jfrog.io/artifactory/maven-releases/"
-            }
-
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/bedrockk/MoLang")
             credentials {
-                username = "$maven_user"
-                password = "$maven_pass"
+                username = "$GITHUB_PK_USER"
+                password = "$GITHUB_PK_TOKEN"
             }
         }
     }
-
     publications {
-        maven(MavenPublication) {
-            from components.java
+        gpr(MavenPublication) {
+            from(components.java)
         }
     }
 }

@@ -7,27 +7,3 @@ Minecraft's MoLang parser & evaluator implementation in Java
 
 ##### Credits:
 - [MoLang](https://github.com/bridge-core/MoLang)
-
-##### Repos:
-```xml
-    <repositories>
-        <repository>
-            <id>bedrockk-releases</id>
-            <url>https://bedrockk.jfrog.io/artifactory/maven-releases/</url>
-        </repository>
-        <repository>
-            <id>bedrockk-snapshots</id>
-            <url>https://bedrockk.jfrog.io/artifactory/maven-snapshots/</url>
-        </repository>
-    </repositories>
-```
-
-##### Dependency:
-```xml
-<dependency>
-     <groupId>com.bedrockk</groupId>
-     <artifactId>molang</artifactId>
-     <version>1.0-SNAPSHOT</version>
-     <scope>compile</scope>
-</dependency>
-```
