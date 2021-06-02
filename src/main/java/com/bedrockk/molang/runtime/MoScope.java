@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MoScope {
-
     private boolean isBreak = false;
     private boolean isContinue = false;
     private MoValue returnValue;

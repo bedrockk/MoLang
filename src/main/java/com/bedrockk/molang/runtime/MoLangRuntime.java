@@ -1,8 +1,8 @@
 package com.bedrockk.molang.runtime;
 
-import com.bedrockk.molang.parser.ExprTraverser;
-import com.bedrockk.molang.parser.Expression;
-import com.bedrockk.molang.parser.visitor.ExprConnectingVisitor;
+import com.bedrockk.molang.ExprTraverser;
+import com.bedrockk.molang.Expression;
+import com.bedrockk.molang.visitor.ExprConnectingVisitor;
 import com.bedrockk.molang.runtime.struct.ArrayStruct;
 import com.bedrockk.molang.runtime.struct.ContextStruct;
 import com.bedrockk.molang.runtime.struct.VariableStruct;
@@ -12,7 +12,6 @@ import com.bedrockk.molang.runtime.value.MoValue;
 import java.util.*;
 
 public class MoLangRuntime {
-
     private final MoLangEnvironment environment = new MoLangEnvironment();
 
     public MoLangRuntime() {
@@ -31,14 +30,14 @@ public class MoLangRuntime {
     }
 
     public MoValue execute(List<Expression> expressions, Map<String, MoValue> context) {
-        ExprTraverser traverser = new ExprTraverser();
+        var traverser = new ExprTraverser();
         traverser.getVisitors().add(new ExprConnectingVisitor());
         traverser.traverse(expressions);
 
         environment.getStructs().put("context", new ContextStruct(context));
 
-        MoValue result = new DoubleValue(0.0);
-        MoScope scope = new MoScope();
+        MoValue result = DoubleValue.ZERO;
+        var scope = new MoScope();
         for (Expression expression : new ArrayList<>(expressions)) {
             if (scope.getReturnValue() != null) {
                 break;

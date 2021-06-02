@@ -19,14 +19,8 @@ public class MoParams {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(int index, Class<T> expectedType) {
-        MoValue obj = params.get(index);
-
-        if (obj.getClass().equals(expectedType)) {
-            return (T) obj;
-        } else {
-            throw new RuntimeException("MoParams: Expected parameter type of " + expectedType.getName() + ", " + obj.getClass().getName() + " given.");
-        }
+    public <T extends MoValue> T get(int index) {
+        return (T) params.get(index);
     }
 
     public boolean contains(int index) {
@@ -38,19 +32,19 @@ public class MoParams {
     }
 
     public double getDouble(int index) {
-        return get(index, DoubleValue.class).asDouble();
+        return this.<DoubleValue>get(index).asDouble();
     }
 
     public MoStruct getStruct(int index) {
-        return get(index, MoStruct.class);
+        return get(index);
     }
 
     public String getString(int index) {
-        return get(index, StringValue.class).asString();
+        return this.<StringValue>get(index).asString();
     }
 
     public MoLangEnvironment getEnv(int index) {
-        return get(index, MoLangEnvironment.class);
+        return get(index);
     }
 
     public List<MoValue> getParams() {

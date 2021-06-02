@@ -1,10 +1,10 @@
 package com.bedrockk.molang.parser.parselet;
 
-import com.bedrockk.molang.parser.Expression;
+import com.bedrockk.molang.Expression;
 import com.bedrockk.molang.parser.MoLangParser;
 import com.bedrockk.molang.parser.Precedence;
 import com.bedrockk.molang.parser.PrefixParselet;
-import com.bedrockk.molang.parser.expression.StatementExpression;
+import com.bedrockk.molang.ast.StatementExpression;
 import com.bedrockk.molang.parser.tokenizer.Token;
 import com.bedrockk.molang.parser.tokenizer.TokenType;
 

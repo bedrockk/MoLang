@@ -1,5 +1,6 @@
 package com.bedrockk.molang.parser;
 
+import com.bedrockk.molang.Expression;
 import com.bedrockk.molang.parser.parselet.*;
 import com.bedrockk.molang.parser.tokenizer.Token;
 import com.bedrockk.molang.parser.tokenizer.TokenIterator;
@@ -147,18 +148,10 @@ public final class MoLangParser {
         String[] splits = name.split("\\.");
 
         switch (splits[0]) {
-            case "q":
-                splits[0] = "query";
-                break;
-            case "v":
-                splits[0] = "variable";
-                break;
-            case "t":
-                splits[0] = "temp";
-                break;
-            case "c":
-                splits[0] = "context";
-                break;
+            case "q" -> splits[0] = "query";
+            case "v" -> splits[0] = "variable";
+            case "t" -> splits[0] = "temp";
+            case "c" -> splits[0] = "context";
         }
 
         return String.join(".", splits);

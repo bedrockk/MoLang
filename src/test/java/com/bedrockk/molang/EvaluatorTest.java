@@ -1,10 +1,8 @@
 package com.bedrockk.molang;
 
-import com.bedrockk.molang.parser.ExprTraverser;
-import com.bedrockk.molang.parser.ExprVisitor;
-import com.bedrockk.molang.parser.Expression;
 import com.bedrockk.molang.parser.MoLangParser;
 import com.bedrockk.molang.runtime.MoLangRuntime;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,22 +12,22 @@ import java.util.List;
 @DisplayName("Evaluator Test")
 public class EvaluatorTest {
 
-    @Test
-    public void testEval() throws IOException {
-        MoLangParser parser = MoLang.newParser(getClass().getClassLoader().getResourceAsStream("expr4.txt"));
-        MoLangRuntime runtime = MoLang.newRuntime();
+    private void eval(String file, double expected) throws IOException {
+        var parsed = MoLang.parse(getClass().getClassLoader().getResourceAsStream(file));
+        var runtime = MoLang.createRuntime();
+        var actual = runtime.execute(parsed).asDouble();
 
-        List<Expression> expressions = parser.parse();
-        System.out.println("Eval Test Result: " + runtime.execute(expressions).asDouble());
-
-        ExprTraverser traverser = new ExprTraverser();
-        traverser.getVisitors().add(expression -> {
-            if (expression.getAttributes().containsKey("parent")) {
-                System.out.println("Oh now: " + expression.getAttributes().get("parent"));
-            }
-
-            return null;
-        });
-        traverser.traverse(expressions);
+        Assertions.assertEquals(Math.round(expected), Math.round(actual));
     }
+
+    @Test
+    public void testEval3() throws IOException {
+        eval("expr3.txt", (213 + 2 / 0.5 + 5 + 2 * 3));
+    }
+
+    @Test
+    public void testEval4() throws IOException {
+        eval("expr4.txt", (213 + 2 / 0.5 + 5 + 2 * 3) + 310.5 + (10 * Math.cos(270)) + 100);
+    }
+
 }

@@ -5,7 +5,7 @@ import com.bedrockk.molang.runtime.struct.QueryStruct;
 import java.util.HashMap;
 import java.util.function.Function;
 
-public class MoLangMath {
+public final class MoLangMath {
 
     public static final QueryStruct LIBRARY = new QueryStruct(new HashMap<String, Function<MoParams, Object>>(){
         {
